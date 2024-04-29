@@ -9,8 +9,9 @@ on:
       - 'feature/*'
 
 jobs:
-  build:
+  build_dependencies:
     runs-on: ubuntu-latest
+    name: Install Dependencies
 
     steps:
       - name: Checkout Repository
@@ -19,9 +20,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-  test:
-    needs: build
+  run_tests:
+    needs: build_dependencies
     runs-on: ubuntu-latest
+    name: Run Tests
 
     steps:
       - name: Checkout Repository
@@ -30,9 +32,10 @@ jobs:
       - name: Run Tests
         run: npm test
 
-  build:
-    needs: test
+  build_application:
+    needs: run_tests
     runs-on: ubuntu-latest
+    name: Build Application
 
     steps:
       - name: Checkout Repository
@@ -42,25 +45,27 @@ jobs:
         run: npm run build
 
   deploy_production:
-    needs: build
+    needs: build_application
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    name: Deploy to Production
 
     steps:
       - name: Deploy to Production
-        uses: <deployment-action>
+        uses: <deployment-action>@v1  # Hier die Versionsnummer der Deployment-Aktion einfügen
         with:
           environment: production
           deploy-key: ${{ secrets.DEPLOY_KEY }}
 
   deploy_staging:
-    needs: build
+    needs: build_application
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/release/*'
     runs-on: ubuntu-latest
+    name: Deploy to Staging
 
     steps:
       - name: Deploy to Staging
-        uses: <deployment-action>
+        uses: <deployment-action>@v1  # Hier die Versionsnummer der Deployment-Aktion einfügen
         with:
           environment: staging
           deploy-key: ${{ secrets.DEPLOY_KEY }}
