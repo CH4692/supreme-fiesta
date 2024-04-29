@@ -38,5 +38,4 @@ Um das Frontend-Projekt lokal auszuführen, führe die folgenden Schritte aus:
 Wenn du einen Fehler findest, einen Vorschlag für eine Verbesserung hast oder zum Projekt beitragen möchtest, kannst du gerne eine Issue erstellen oder einen Pull Request öffnen. Wir begrüßen Beiträge jeder Art!
 
 ## Lizenz
-
 Dieses Projekt ist unter der [MIT-Lizenz](LICENSE) lizenziert.
