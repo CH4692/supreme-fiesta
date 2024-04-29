@@ -1,0 +1,66 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - release/*
+      - 'feature/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Run Tests
+        run: npm test
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Application
+        run: npm run build
+
+  deploy_production:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Production
+        uses: <deployment-action>
+        with:
+          environment: production
+          deploy-key: ${{ secrets.DEPLOY_KEY }}
+
+  deploy_staging:
+    needs: build
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/release/*'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Staging
+        uses: <deployment-action>
+        with:
+          environment: staging
+          deploy-key: ${{ secrets.DEPLOY_KEY }}
