@@ -9,7 +9,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-      
+
+    - name: go to frontend file
+      run: cd frontend
     - name: Install vitest
       run: npm install vitest
       
