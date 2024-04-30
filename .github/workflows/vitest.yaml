@@ -1,0 +1,31 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      
+    - name: Install vitest
+      run: npm install vitest
+      
+    - name: Run vitest
+      run: npm run vitest
+      
+    - name: Set test status
+      if: ${{ failure() }}
+      uses: actions/github-script@v4
+      with:
+        script: |
+          github.repos.createStatus({
+            ...context.repo,
+            sha: process.env.GITHUB_SHA,
+            state: 'failure',
+            description: 'Tests failed'
+          });
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
